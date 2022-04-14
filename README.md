@@ -34,3 +34,12 @@ II. Use locals to name resources
 
 In the configuration's `main.tf` file, several of the resources have `name` arguments created by interpolating the `project` and `environment` values from the `resource_tags` variable with another value that describes the resource. Reduce duplication and make this configuration clearer by setting the shared part of each `name` as a local value to re-use across your configuration. Define the local `name_suffix`
 Update the `name` attributes in the configuration to use this new local value.
+
+III. Combine variables with local values
+Unlike variable values, local values can use dynamic expressions and resource arguments. The `resource_tags` map in `variables.tf` defines the tags for the local `name_suffix` as defaults
+- Add new variable definitions to `variables.tf`
+- Add new locals block to `main.tf` to create a map combining both required tags and user defined tags.
+- Update the definition of the `name_suffix` local to use the new variables for `project_name` and `environment`.
+- Update the five references to tags in `main.tf` to use the new local value.
+- Add an output named `tags` to the `output.tf`. This value should be a combination of var.resource_tags and local.required_tags.
+
