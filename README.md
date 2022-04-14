@@ -43,3 +43,8 @@ Unlike variable values, local values can use dynamic expressions and resource ar
 - Update the five references to tags in `main.tf` to use the new local value.
 - Add an output named `tags` to the `output.tf`. This value should be a combination of var.resource_tags and local.required_tags.
 
+IV. Destroy the infrastructure
+```
+$ terraform destroy
+```
+Confirm with yes.
