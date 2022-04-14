@@ -29,3 +29,8 @@ Initialize and apply this configuration.
 $ terraform init
 $ terraform apply
 ```
+
+II. Use locals to name resources
+
+In the configuration's `main.tf` file, several of the resources have `name` arguments created by interpolating the `project` and `environment` values from the `resource_tags` variable with another value that describes the resource. Reduce duplication and make this configuration clearer by setting the shared part of each `name` as a local value to re-use across your configuration. Define the local `name_suffix`
+Update the `name` attributes in the configuration to use this new local value.
