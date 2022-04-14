@@ -15,7 +15,15 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  name_suffix = "${var.resource_tags["project"]}-${var.resource_tags["environment"]}"
+  name_suffix = "${var.project_name}-${var.environment}"
+}
+
+locals {
+  required_tags = {
+    project     = var.project_name,
+    environment = var.environment
+  }
+  tags = merge(var.resource_tags, local.required_tags)
 }
 
 
@@ -33,7 +41,7 @@ module "vpc" {
   enable_nat_gateway = true
   enable_vpn_gateway = var.enable_vpn_gateway
 
-  tags = var.resource_tags
+  tags = local.tags
 }
 
 module "app_security_group" {
@@ -46,7 +54,7 @@ module "app_security_group" {
 
   ingress_cidr_blocks = module.vpc.public_subnets_cidr_blocks
 
-  tags = var.resource_tags
+  tags = local.tags
 }
 
 module "lb_security_group" {
@@ -59,7 +67,7 @@ module "lb_security_group" {
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
 
-  tags = var.resource_tags
+  tags = local.tags
 }
 
 resource "random_string" "lb_id" {
@@ -97,7 +105,7 @@ module "elb_http" {
     timeout             = 5
   }
 
-  tags = var.resource_tags
+  tags = local.tags
 }
 
 data "aws_ami" "amazon_linux" {
@@ -130,5 +138,5 @@ resource "aws_instance" "app" {
     echo "<html><body><div>Hello, world!</div></body></html>" > /var/www/html/index.html
     EOF
 
-  tags = var.resource_tags
+  tags = local.tags
 }
